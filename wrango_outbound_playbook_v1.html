@@ -1,0 +1,2288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wrango Outbound Playbook V1</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0d;
+    --surface: #141414;
+    --surface2: #1a1a1a;
+    --border: #2a2a2a;
+    --accent: #e8ff47;
+    --accent2: #47d4ff;
+    --accent3: #ff6b47;
+    --text: #f0ede8;
+    --text-muted: #7a7570;
+    --text-dim: #4a4540;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(13,13,13,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 52px;
+  }
+  .nav-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .nav-links {
+    display: flex;
+    gap: 28px;
+    list-style: none;
+  }
+  .nav-links a {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--text); }
+
+  /* ─── HERO ─── */
+  .hero {
+    padding: 80px 40px 60px;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-eyebrow {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+  .hero h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: clamp(38px, 5vw, 62px);
+    line-height: 1.1;
+    font-weight: 700;
+    max-width: 780px;
+    margin-bottom: 24px;
+  }
+  .hero h1 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+  .hero-sub {
+    color: var(--text-muted);
+    font-size: 16px;
+    max-width: 560px;
+    line-height: 1.7;
+    margin-bottom: 40px;
+  }
+  .hero-meta {
+    display: flex;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+  .hero-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .hero-stat-val {
+    font-family: 'DM Mono', monospace;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--accent2);
+  }
+  .hero-stat-label {
+    font-size: 11px;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  /* ─── LAYOUT ─── */
+  .page { max-width: 1100px; margin: 0 auto; padding: 0 40px; }
+
+  /* ─── SECTION ─── */
+  .section {
+    padding: 64px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    margin-bottom: 40px;
+  }
+  .section-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    padding-top: 6px;
+    min-width: 32px;
+    letter-spacing: 0.1em;
+  }
+  .section-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+  .section-title span {
+    color: var(--text-muted);
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  /* ─── PHILOSOPHY GRID ─── */
+  .philosophy-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .phil-card {
+    background: var(--surface);
+    padding: 28px 32px;
+  }
+  .phil-card-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-bottom: 12px;
+    letter-spacing: 0.15em;
+  }
+  .phil-card h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+  .phil-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .phil-card .accent-line {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* ─── TWO MODES ─── */
+  .modes-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .mode-card {
+    border: 1px solid var(--border);
+    padding: 32px;
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  .mode-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+  }
+  .mode-card.pqs::before { background: var(--accent); }
+  .mode-card.pvp::before { background: var(--accent2); }
+  .mode-badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+  .mode-card.pqs .mode-badge { background: rgba(232,255,71,0.1); color: var(--accent); }
+  .mode-card.pvp .mode-badge { background: rgba(71,212,255,0.1); color: var(--accent2); }
+  .mode-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .mode-card .mode-when {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+  .mode-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 16px;
+  }
+  .mode-structure {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    padding: 12px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  .mode-structure strong { color: var(--text); }
+
+  /* ─── STRUCTURAL RULES ─── */
+  .rules-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-bottom: 24px;
+  }
+  .rule-card {
+    background: var(--surface);
+    padding: 24px 26px;
+  }
+  .rule-icon {
+    font-size: 18px;
+    margin-bottom: 12px;
+  }
+  .rule-card h3 {
+    font-size: 13px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .rule-card p, .rule-card li {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .rule-card ul { padding-left: 16px; }
+  .rule-card .good { color: #6dffb3; }
+  .rule-card .bad { color: var(--accent3); text-decoration: line-through; opacity: 0.6; }
+  .rule-card code {
+    font-family: 'DM Mono', monospace;
+    background: var(--bg);
+    padding: 2px 6px;
+    font-size: 11px;
+    color: var(--accent);
+  }
+
+  /* ─── INSIGHT LIBRARY ─── */
+  .insight-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .insight-item {
+    background: var(--surface);
+    padding: 20px 24px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .insight-tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    padding: 3px 8px;
+    border: 1px solid rgba(232,255,71,0.3);
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+  .insight-text {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    font-style: italic;
+  }
+
+  /* ─── PERSONA SECTION ─── */
+  .persona-tabs {
+    display: flex;
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-bottom: none;
+    flex-wrap: wrap;
+  }
+  .persona-tab {
+    padding: 10px 18px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: var(--surface);
+    cursor: pointer;
+    border: none;
+    transition: all 0.15s;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+  .persona-tab:hover { color: var(--text); background: var(--surface2); }
+  .persona-tab.active { color: var(--accent); background: var(--bg); }
+  
+  .persona-panel {
+    display: none;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: 32px;
+  }
+  .persona-panel.active { display: block; }
+  
+  .persona-header {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+  }
+  .persona-title-block h3 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .persona-roles {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+  
+  .persona-meta-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 28px;
+  }
+  .persona-meta-item {
+    background: var(--bg);
+    padding: 16px;
+    border: 1px solid var(--border);
+  }
+  .persona-meta-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .persona-meta-text {
+    font-size: 12px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  
+  .persona-angles {
+    margin-bottom: 28px;
+  }
+  .persona-angles h4 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 12px;
+  }
+  .angles-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .angle-chip {
+    background: rgba(232,255,71,0.06);
+    border: 1px solid rgba(232,255,71,0.2);
+    color: var(--text);
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  /* ─── SEQUENCE ─── */
+  .sequence-container { margin-top: 16px; }
+  .email-card {
+    border: 1px solid var(--border);
+    margin-bottom: 12px;
+    background: var(--bg);
+    overflow: hidden;
+  }
+  .email-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 20px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+  }
+  .email-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--accent);
+    font-weight: 500;
+    background: rgba(232,255,71,0.08);
+    padding: 3px 8px;
+    border: 1px solid rgba(232,255,71,0.2);
+  }
+  .email-type {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+    flex: 1;
+  }
+  .email-timing {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+  }
+  .email-toggle {
+    font-size: 10px;
+    color: var(--text-dim);
+    transition: transform 0.2s;
+  }
+  .email-card.open .email-toggle { transform: rotate(180deg); }
+  
+  .email-body {
+    display: none;
+    padding: 24px;
+  }
+  .email-card.open .email-body { display: block; }
+  
+  .email-variants {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+  .variant {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px;
+  }
+  .variant-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .variant.a .variant-label { color: var(--accent); }
+  .variant.b .variant-label { color: var(--accent2); }
+  
+  .email-field {
+    margin-bottom: 12px;
+  }
+  .email-field-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .email-field-val {
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .email-field-val.subject {
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--accent);
+  }
+  .email-field-val.body {
+    white-space: pre-wrap;
+    color: var(--text-muted);
+    font-size: 13px;
+    line-height: 1.8;
+    background: var(--bg);
+    padding: 14px;
+    border-left: 2px solid var(--border);
+  }
+  .email-field-val.cta {
+    color: var(--accent2);
+    font-style: italic;
+  }
+  
+  .email-note {
+    font-size: 11px;
+    color: var(--text-dim);
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    margin-top: 4px;
+    font-style: italic;
+  }
+
+  /* ─── LINKEDIN ─── */
+  .li-sequence {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+  }
+  .li-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 20px 24px;
+    display: flex;
+    gap: 20px;
+  }
+  .li-step {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--accent);
+    padding-top: 2px;
+    min-width: 28px;
+    font-weight: 500;
+  }
+  .li-content {}
+  .li-type {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .li-message {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.7;
+    white-space: pre-wrap;
+  }
+  .li-timing {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 8px;
+  }
+
+  /* ─── PERSONALIZATION VARS ─── */
+  .vars-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    margin-top: 16px;
+  }
+  .var-card {
+    background: var(--surface);
+    padding: 20px 24px;
+  }
+  .var-card h4 {
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+    color: var(--text-muted);
+  }
+  .var-card ul { list-style: none; }
+  .var-card li {
+    font-size: 12px;
+    color: var(--text-muted);
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    line-height: 1.5;
+  }
+  .var-card li::before {
+    content: '→';
+    color: var(--accent);
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding-top: 1px;
+    flex-shrink: 0;
+  }
+  .var-card li:last-child { border-bottom: none; }
+
+  /* ─── QA CHECKLIST ─── */
+  .checklist {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .check-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 14px 18px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+  }
+  .check-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  /* ─── REPLY PLAYBOOK ─── */
+  .reply-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .reply-card {
+    background: var(--surface);
+    padding: 24px 28px;
+  }
+  .reply-signal {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 8px;
+  }
+  .reply-trigger {
+    font-size: 13px;
+    font-style: italic;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    padding: 8px 12px;
+    background: var(--bg);
+    border-left: 2px solid var(--accent2);
+  }
+  .reply-response {
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+
+  /* ─── TONE GUIDE ─── */
+  .tone-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .tone-col {
+    padding: 24px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .tone-col.good { border-color: rgba(109,255,179,0.3); }
+  .tone-col.bad { border-color: rgba(255,107,71,0.3); }
+  .tone-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .tone-col.good .tone-label { color: #6dffb3; }
+  .tone-col.bad .tone-label { color: var(--accent3); }
+  .tone-col ul { list-style: none; }
+  .tone-col li {
+    font-size: 13px;
+    color: var(--text-muted);
+    padding: 6px 0;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: center;
+  }
+  .tone-col li:last-child { border-bottom: none; }
+  .tone-col.good li::before { content: '✓'; color: #6dffb3; font-size: 11px; }
+  .tone-col.bad li::before { content: '✗'; color: var(--accent3); font-size: 11px; }
+
+  /* ─── CATEGORY SPINE ─── */
+  .spine-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    padding: 40px 48px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .spine-box::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at center, rgba(232,255,71,0.04) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .spine-box p {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 22px;
+    font-style: italic;
+    color: var(--text);
+    line-height: 1.5;
+    max-width: 700px;
+    margin: 0 auto 20px;
+  }
+  .spine-box .spine-sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    font-family: 'Space Grotesk', sans-serif;
+    font-style: normal;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    padding: 40px;
+    text-align: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.1em;
+    border-top: 1px solid var(--border);
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin: 28px 0;
+  }
+  .divider-line { flex: 1; height: 1px; background: var(--border); }
+  .divider-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 0 20px; }
+    .hero { padding: 40px 20px; }
+    .page { padding: 0 20px; }
+    .philosophy-grid, .modes-grid, .rules-grid, .insight-grid,
+    .persona-meta-grid, .email-variants, .vars-grid, .checklist,
+    .reply-grid, .tone-compare { grid-template-columns: 1fr; }
+    nav .nav-links { display: none; }
+    .hero h1 { font-size: 32px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Wrango / Outbound Playbook V1</div>
+  <ul class="nav-links">
+    <li><a href="#philosophy">Philosophy</a></li>
+    <li><a href="#structure">Structure</a></li>
+    <li><a href="#personas">Personas</a></li>
+    <li><a href="#sequences">Sequences</a></li>
+    <li><a href="#linkedin">LinkedIn</a></li>
+    <li><a href="#replies">Replies</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Outbound Sequencing Playbook · V1.0</div>
+  <h1>Diagnose the<br>constraint.<br><em>Earn the reply.</em></h1>
+  <p class="hero-sub">Wrango outbound is infrastructure-led, not product-led. Every email diagnoses a structural problem the buyer is already living inside. Reply is the win condition.</p>
+  <div class="hero-meta">
+    <div class="hero-stat">
+      <span class="hero-stat-val">7</span>
+      <span class="hero-stat-label">ICP Personas</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">4-Touch</span>
+      <span class="hero-stat-label">Sequence Structure</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">&lt;100</span>
+      <span class="hero-stat-label">Words Per Email</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-val">A/B</span>
+      <span class="hero-stat-label">Every Touch</span>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- ─── 1. PHILOSOPHY ─── -->
+  <section class="section" id="philosophy">
+    <div class="section-header">
+      <div class="section-num">01</div>
+      <h2 class="section-title">Philosophy <span>/ How Wrango Shows Up</span></h2>
+    </div>
+
+    <div class="spine-box" style="margin-bottom: 40px;">
+      <p>"Most pharma omnichannel is coordinated media — not coordinated impact."</p>
+      <div class="spine-sub">Every email ladders back to this infrastructure truth. We are diagnosing systemic constraints. Not pushing tools.</div>
+    </div>
+
+    <div class="philosophy-grid">
+      <div class="phil-card">
+        <div class="phil-card-num">PRINCIPLE 01</div>
+        <h3>Diagnose Before Pitching</h3>
+        <p>The best outbound identifies a structural constraint the buyer is already experiencing. The email should feel like a <span class="accent-line">diagnosis, not a pitch</span>. We never introduce Wrango prematurely — only after engagement signal.</p>
+      </div>
+      <div class="phil-card">
+        <div class="phil-card-num">PRINCIPLE 02</div>
+        <h3>Reply = Win Condition</h3>
+        <p>The goal is not to book a meeting in Email 1. The goal is to trigger curiosity, disagreement, or recognition. <span class="accent-line">We ask for truth, not time.</span> CTAs invite conversation, never force a calendar.</p>
+      </div>
+      <div class="phil-card">
+        <div class="phil-card-num">PRINCIPLE 03</div>
+        <h3>Short Is the Strategy</h3>
+        <p>Messages must be short, skimmable, direct, conversational. <span class="accent-line">Under 100 words. No paragraphs. One idea per line.</span> Brevity signals respect for the reader's time and confidence in the insight.</p>
+      </div>
+      <div class="phil-card">
+        <div class="phil-card-num">PRINCIPLE 04</div>
+        <h3>Insight Creates Curiosity</h3>
+        <p>Good outreach introduces a truth the buyer recognizes but hasn't articulated. Surface <span class="accent-line">industry blind spots, structural tradeoffs, measurement gaps</span>. If the email doesn't make them pause, don't send it.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 2. TWO MODES ─── -->
+  <section class="section" id="structure">
+    <div class="section-header">
+      <div class="section-num">02</div>
+      <h2 class="section-title">Two Modes <span>/ PQS vs. PVP</span></h2>
+    </div>
+
+    <div class="modes-grid">
+      <div class="mode-card pqs">
+        <div class="mode-badge">Mode A — PQS</div>
+        <h3>Pain-Qualified Segment Diagnosis</h3>
+        <div class="mode-when">Use when: the condition is likely true but you lack account-specific intelligence</div>
+        <p>Goal: Confirm the infrastructure constraint. Surface a pain that is objectively likely true for this ICP — and ask if they're living inside it.</p>
+        <div class="mode-structure">
+          <strong>Situation</strong> → <strong>Insight</strong> → <strong>Inquisition</strong>
+        </div>
+      </div>
+      <div class="mode-card pvp">
+        <div class="mode-badge">Mode B — PVP</div>
+        <h3>Permissionless Value Prop</h3>
+        <div class="mode-when">Use when: you have real account-level intelligence and can surface a blind spot</div>
+        <p>Goal: Transfer value before asking for time. Do the work first. If the PVP is vague or generic, don't send it — it reads as a pitch, not a service.</p>
+        <div class="mode-structure">
+          <strong>Observation</strong> → <strong>Implication</strong> → <strong>Offer insight</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 3. STRUCTURAL RULES ─── -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-num">03</div>
+      <h2 class="section-title">Structural Rules <span>/ Non-Negotiable</span></h2>
+    </div>
+
+    <div class="rules-grid">
+      <div class="rule-card">
+        <div class="rule-icon">⌥</div>
+        <h3>Subject Line</h3>
+        <p>2–4 words. Situation or tension-based. No fluff.</p><br>
+        <p class="good">✓ "Script lift lag?"</p>
+        <p class="good">✓ "Identity reset?"</p>
+        <p class="good">✓ "Outside programmatic?"</p>
+        <p class="good">✓ "Measurement gated?"</p>
+        <br>
+        <p class="bad">✗ "Quick question"</p>
+        <p class="bad">✗ "Following up"</p>
+        <p class="bad">✗ "Intro"</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">👁</div>
+        <h3>Preview Zone</h3>
+        <p>First 10–15 words determine open behavior. Never waste preview real estate.</p><br>
+        <p style="font-size:12px; color: #6dffb3; margin-bottom:8px;">Options:</p>
+        <ul>
+          <li>Company name + tension</li>
+          <li>Sharp category insight</li>
+          <li>Launch-triggered constraint</li>
+        </ul><br>
+        <p style="font-size:11px; color: var(--text-dim); font-style:italic;">e.g. "At Pfizer, are you reconciling exposure outside DeepIntent?"</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">✂</div>
+        <h3>Length</h3>
+        <ul>
+          <li>Under 100 words</li>
+          <li>3–5 lines max</li>
+          <li>No paragraph blocks</li>
+          <li>One idea per line</li>
+          <li>No links in Email 1–3</li>
+          <li>No attachments</li>
+        </ul>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">⚡</div>
+        <h3>Personalization</h3>
+        <p>Must intensify the condition — not decorate the email.</p><br>
+        <p class="good">✓ Brand launch timing</p>
+        <p class="good">✓ DSP / media stack</p>
+        <p class="good">✓ Therapeutic area pressure</p>
+        <p class="good">✓ Earnings call ROI pressure</p>
+        <br>
+        <p class="bad">✗ "Saw you went to Michigan"</p>
+        <p class="bad">✗ Career history</p>
+        <p class="bad">✗ Generic flattery</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">→</div>
+        <h3>CTA Style</h3>
+        <p>Interest-based. Never meeting-based.</p><br>
+        <p class="good">✓ "Is that happening there?"</p>
+        <p class="good">✓ "Am I close?"</p>
+        <p class="good">✓ "Or different on your side?"</p>
+        <p class="good">✓ "Worth comparing notes?"</p>
+        <br>
+        <p class="bad">✗ "30 minutes next week?"</p>
+        <p class="bad">✗ "Can I show you a deck?"</p>
+      </div>
+      <div class="rule-card">
+        <div class="rule-icon">◈</div>
+        <h3>Solution Tease</h3>
+        <p>Optional. Allowed only in subtle form — and only in Email 2+.</p><br>
+        <p style="font-size:12px; color: #6dffb3; margin-bottom:6px;">Allowed:</p>
+        <p style="font-size:11px; color: var(--text-muted); font-style:italic;">"There's a way to persist identity across buying environments without forcing stack changes."</p>
+        <br>
+        <p class="bad">✗ Feature dumps</p>
+        <p class="bad">✗ "We are the leading…"</p>
+        <p class="bad">✗ Platform explanations</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 4. INSIGHT LIBRARY ─── -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-num">04</div>
+      <h2 class="section-title">Insight Library <span>/ Infrastructure Truths</span></h2>
+    </div>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Pull from these when writing the "Insight" line. These are constraint diagnoses, not product claims.</p>
+
+    <div class="insight-grid">
+      <div class="insight-item">
+        <span class="insight-tag">OMNICHANNEL</span>
+        <span class="insight-text">Most pharma omnichannel optimizes inside buying environments — not across them.</span>
+      </div>
+      <div class="insight-item">
+        <span class="insight-tag">IDENTITY</span>
+        <span class="insight-text">Identity persistence resets when media moves channels. That gap distorts optimization decisions.</span>
+      </div>
+      <div class="insight-item">
+        <span class="insight-tag">MEASUREMENT</span>
+        <span class="insight-text">Script lift validation often arrives too late to influence spend decisions already committed.</span>
+      </div>
+      <div class="insight-item">
+        <span class="insight-tag">AUDIENCES</span>
+        <span class="insight-text">Audience build cycles lag campaign velocity. That lag limits iteration in an outcomes-driven market.</span>
+      </div>
+      <div class="insight-item">
+        <span class="insight-tag">ACCESS</span>
+        <span class="insight-text">Access to outcomes measurement is gated by contract size. $500K minimums lock out mid-sized brands.</span>
+      </div>
+      <div class="insight-item">
+        <span class="insight-tag">PRIVACY</span>
+        <span class="insight-text">Privacy is often used to justify outdated workflows — not to protect them.</span>
+      </div>
+      <div class="insight-item">
+        <span class="insight-tag">OPTIMIZATION</span>
+        <span class="insight-text">Optimization decisions are frequently made on click proxies — not clinical behavior.</span>
+      </div>
+      <div class="insight-item">
+        <span class="insight-tag">SEARCH</span>
+        <span class="insight-text">HCP search targeting still runs on keyword logic. It can't tell a physician from a patient.</span>
+      </div>
+      <div class="insight-item">
+        <span class="insight-tag">SOCIAL</span>
+        <span class="insight-text">Social HCP targeting is still blunt match lists — no dynamic audience, no Rx proof.</span>
+      </div>
+      <div class="insight-item">
+        <span class="insight-tag">INFRA</span>
+        <span class="insight-text">Closed-loop validation usually happens post-flight, not mid-flight. By then, spend is already committed.</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 5. PERSONAS + SEQUENCES ─── -->
+  <section class="section" id="personas">
+    <div class="section-header">
+      <div class="section-num">05</div>
+      <h2 class="section-title">ICP Personas <span>+ Sequence Playbooks</span></h2>
+    </div>
+
+    <div class="persona-tabs">
+      <button class="persona-tab active" onclick="switchPersona('biddable')">Agency: Biddable Lead</button>
+      <button class="persona-tab" onclick="switchPersona('search')">Agency: Search Lead</button>
+      <button class="persona-tab" onclick="switchPersona('social')">Agency: Social Lead</button>
+      <button class="persona-tab" onclick="switchPersona('programmatic')">Agency: Programmatic Lead</button>
+      <button class="persona-tab" onclick="switchPersona('brand')">Brand: Omnichannel Lead</button>
+      <button class="persona-tab" onclick="switchPersona('analytics')">Analytics / Measurement</button>
+      <button class="persona-tab" onclick="switchPersona('platform')">Vendor / Platform Partner</button>
+    </div>
+
+    <!-- BIDDABLE -->
+    <div id="persona-biddable" class="persona-panel active">
+      <div class="persona-header">
+        <div class="persona-title-block">
+          <h3>Agency — Biddable / Performance Media Lead</h3>
+          <div class="persona-roles">VP Biddable Media · VP Performance Media · Head of Paid Media</div>
+        </div>
+      </div>
+      <div class="persona-meta-grid">
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Core Constraint</div>
+          <div class="persona-meta-text">No single infrastructure across all biddable channels. Every vendor solves one problem. Margin lives in the platform, not the agency.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Current Stack</div>
+          <div class="persona-meta-text">DeepIntent (programmatic), match lists (social), standard Google/Bing (search), siloed tools, LiveRamp-dependent audience delivery.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Aspiration</div>
+          <div class="persona-meta-text">Own white-label infrastructure. One platform all channel leads pull from. Self-serve audience builds. Reduce LiveRamp dependency. Improve match rates.</div>
+        </div>
+      </div>
+      <div class="persona-angles">
+        <h4>Messaging Angles</h4>
+        <div class="angles-list">
+          <span class="angle-chip">Fragmented channel infrastructure</span>
+          <span class="angle-chip">Vendor ecosystem lock-in</span>
+          <span class="angle-chip">LiveRamp match rate lag</span>
+          <span class="angle-chip">Cross-channel identity fragmentation</span>
+          <span class="angle-chip">Agency vs. platform margin war</span>
+        </div>
+      </div>
+      <div class="divider"><div class="divider-line"></div><div class="divider-label">4-Touch Email Sequence</div><div class="divider-line"></div></div>
+      <div class="sequence-container" id="sequences">
+        <!-- E1 -->
+        <div class="email-card open">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-01</span>
+            <span class="email-type">Diagnose Infrastructure</span>
+            <span class="email-timing">Day 0</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A — Pure Diagnosis</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Channel infrastructure?</div></div>
+                <div class="email-field"><div class="email-field-label">Body</div><div class="email-field-val body">Most biddable teams running HCP campaigns are stitching together three different vendor ecosystems — one for programmatic, another for search, another for social.
+
+Every vendor solves one channel. None of them talk.
+
+That fragmentation usually means audiences aren't consistent, match rates vary, and optimization signals stay siloed.
+
+Is that the infrastructure you're working around?</div></div>
+                <div class="email-field"><div class="email-field-label">CTA</div><div class="email-field-val cta">Is that the infrastructure you're working around?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B — Company-First</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">One audience graph?</div></div>
+                <div class="email-field"><div class="email-field-label">Body</div><div class="email-field-val body">At [Agency], are your HCP audiences consistent across programmatic, search, and social — or does each channel team pull from different vendor lists?
+
+Most biddable leads we talk to are managing three separate ecosystems. Identity breaks between them.
+
+There's a way to run a single deterministic NPI graph across all biddable channels with 93%+ match rates — no LiveRamp middleman.
+
+Worth exploring or different there?</div></div>
+                <div class="email-field"><div class="email-field-label">CTA</div><div class="email-field-val cta">Worth exploring or different there?</div></div>
+              </div>
+            </div>
+            <div class="email-note">No product pitch. Goal is to confirm they're living in fragmented infrastructure. Wrango is not mentioned in Variant A.</div>
+          </div>
+        </div>
+        <!-- E2 -->
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-02</span>
+            <span class="email-type">Sharpen the Constraint</span>
+            <span class="email-timing">Day 4–5</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Margin or vendor?</div></div>
+                <div class="email-field"><div class="email-field-label">Body</div><div class="email-field-val body">The Publicis vs. Trade Desk dynamic isn't just a headline — it's a margin question every agency is sitting inside right now.
+
+When vendor infrastructure owns the HCP audience layer, so do they.
+
+The agencies building white-label capability — not buying it — are the ones keeping that margin.
+
+Is that a conversation happening at [Agency] right now?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">LiveRamp dependency?</div></div>
+                <div class="email-field"><div class="email-field-label">Body</div><div class="email-field-val body">Most HCP audience delivery for Google/YouTube goes through LiveRamp — which means ~45–50% match rates before a campaign even starts.
+
+That's a structural ceiling on performance most teams accept as fixed.
+
+It's not. There's a way to activate deterministic NPI audiences in Google at 93%+ without LiveRamp in the chain.
+
+Is match rate a constraint on your side?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- E3 -->
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-03</span>
+            <span class="email-type">Peer Pattern / New Angle</span>
+            <span class="email-timing">Day 9–10</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A — Peer Signal</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">What agencies are building</div></div>
+                <div class="email-field"><div class="email-field-label">Body</div><div class="email-field-val body">The agencies moving fastest in pharma aren't finding new HCP vendors — they're reducing dependency on all of them.
+
+Single audience graph. API access. White-label activation by channel.
+
+The differentiation is infrastructure ownership, not media buying skill.
+
+Is that a direction [Agency] is already exploring?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B — PVP (if applicable)</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Cross-channel gap</div></div>
+                <div class="email-field"><div class="email-field-label">Body</div><div class="email-field-val body">We looked at how most pharma agencies are running biddable infrastructure.
+
+Programmatic NPI resolution is strong — but identity drops significantly once traffic moves into search and social environments.
+
+That gap usually means different "audiences" per channel that aren't actually the same doctors.
+
+Worth sharing what we're seeing from your stack?</div></div>
+              </div>
+            </div>
+            <div class="email-note">Variant B (PVP) only if you have real account intelligence. If vague, use Variant A.</div>
+          </div>
+        </div>
+        <!-- E4 -->
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-04</span>
+            <span class="email-type">Break Up / Leave Door Open</span>
+            <span class="email-timing">Day 14–16</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A — Calm Exit</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Closing the loop</div></div>
+                <div class="email-field"><div class="email-field-val body">I've shared a few thoughts on biddable infrastructure over the last couple weeks — no response needed if the timing isn't right.
+
+If fragmented channel audiences or match rate constraints ever become a priority, happy to share what we're building.
+
+I'll leave it with you.</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B — Direct Ask</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Wrong timing?</div></div>
+                <div class="email-field"><div class="email-field-val body">Last note — if HCP infrastructure isn't a priority right now, totally understand.
+
+If the cross-channel audience fragmentation issue resonates at some point, we'd be worth 15 minutes.
+
+We can share a one-pager on how the graph works across biddable channels.
+
+No pressure either way.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LinkedIn for Biddable -->
+      <div class="divider"><div class="divider-line"></div><div class="divider-label">LinkedIn Sequence</div><div class="divider-line"></div></div>
+      <div class="li-sequence" id="linkedin">
+        <div class="li-card">
+          <div class="li-step">LI-1</div>
+          <div class="li-content">
+            <div class="li-type">Connection Request</div>
+            <div class="li-message">Curious if pharma biddable infrastructure is still a 3-vendor problem at [Agency] — or if someone's figured out how to consolidate. Impressed by the work on [recent campaign / client win].</div>
+            <div class="li-timing">With connection request</div>
+          </div>
+        </div>
+        <div class="li-card">
+          <div class="li-step">LI-2</div>
+          <div class="li-content">
+            <div class="li-type">Follow-Up After Connect</div>
+            <div class="li-message">Thanks for connecting.
+
+We're seeing most biddable teams lose identity persistence once media moves outside programmatic. Search and social end up with different "HCPs" than what programmatic built.
+
+Is that fragmentation showing up on your campaigns?</div>
+            <div class="li-timing">2–3 days after connect</div>
+          </div>
+        </div>
+        <div class="li-card">
+          <div class="li-step">LI-3</div>
+          <div class="li-content">
+            <div class="li-type">Value Offer</div>
+            <div class="li-message">If you're exploring how to run a single deterministic NPI graph across programmatic, search, and social — without LiveRamp in the chain — I can share a one-pager on how we do it at 93%+ match rates.
+
+Worth a look?</div>
+            <div class="li-timing">5–7 days later</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personalization Vars for Biddable -->
+      <div class="divider"><div class="divider-line"></div><div class="divider-label">Personalization Variables</div><div class="divider-line"></div></div>
+      <div class="vars-grid">
+        <div class="var-card">
+          <h4>Trigger Events</h4>
+          <ul>
+            <li>New pharma client win / account announcement</li>
+            <li>Agency merger or restructure</li>
+            <li>New biddable lead hire or promotion</li>
+            <li>Publicis / Trade Desk coverage — use as a mirror moment</li>
+            <li>Industry article on agency vs. platform margin dynamics</li>
+          </ul>
+        </div>
+        <div class="var-card">
+          <h4>Account-Level Intelligence</h4>
+          <ul>
+            <li>Current DSP stack (DeepIntent, PulsePoint, The Trade Desk)</li>
+            <li>Clients with major HCP launches (signal timing pressure)</li>
+            <li>Known LiveRamp usage — mention match rate ceiling</li>
+            <li>Agency size — smaller = white-label opportunity, larger = API embed</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- SEARCH PERSONA -->
+    <div id="persona-search" class="persona-panel">
+      <div class="persona-header">
+        <div class="persona-title-block">
+          <h3>Agency — Search Lead</h3>
+          <div class="persona-roles">Paid Search Manager · Search Strategy Lead · VP Search</div>
+        </div>
+      </div>
+      <div class="persona-meta-grid">
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Core Constraint</div>
+          <div class="persona-meta-text">HCP search targeting runs on keyword logic — it can't differentiate a physician from a patient. Outcomes tied to search are still clicks and impressions, not scripts.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Current Stack</div>
+          <div class="persona-meta-text">Standard Google/Bing audiences, brand-provided match lists, manual keyword-to-NPI attribution attempts.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Aspiration</div>
+          <div class="persona-meta-text">Run search audience-first, not keyword-first. Claim a bigger share of pharma budget with outcomes data. Elevate search's role inside the agency.</div>
+        </div>
+      </div>
+      <div class="persona-angles">
+        <h4>Messaging Angles</h4>
+        <div class="angles-list">
+          <span class="angle-chip">Keyword ≠ HCP intent</span>
+          <span class="angle-chip">Search measured by clicks not scripts</span>
+          <span class="angle-chip">Match list latency</span>
+          <span class="angle-chip">Search budget share vs. programmatic</span>
+          <span class="angle-chip">Physician vs. patient targeting gap</span>
+        </div>
+      </div>
+      <div class="divider"><div class="divider-line"></div><div class="divider-label">4-Touch Email Sequence</div><div class="divider-line"></div></div>
+      <div class="sequence-container">
+        <div class="email-card open">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-01</span>
+            <span class="email-type">Diagnose Infrastructure</span>
+            <span class="email-timing">Day 0</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Search targeting HCPs?</div></div>
+                <div class="email-field"><div class="email-field-val body">Pharma search targeting still runs predominantly on keywords.
+
+The problem: a keyword doesn't know if it's a physician or a patient. You're bidding against the same signal for both.
+
+Most search teams justify outcomes with clicks and reach — not script behavior.
+
+Is that the reporting model you're working within?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B — Company-First</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">HCP search audiences?</div></div>
+                <div class="email-field"><div class="email-field-val body">At [Agency], are you running HCP search on keyword lists or actual NPI-matched audiences?
+
+Most pharma search campaigns still rely on keyword signals that can't separate a physician from a patient.
+
+There's a way to bring the same deterministic HCP audiences used in programmatic into Google/Bing — and measure back to claims.
+
+Worth exploring or different there?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-02</span>
+            <span class="email-type">Sharpen the Constraint</span>
+            <span class="email-timing">Day 4–5</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Search budget share?</div></div>
+                <div class="email-field"><div class="email-field-val body">Programmatic HCP campaigns have an advantage in the budget conversation: they can show script lift.
+
+Search often can't — which means search budgets are defended by clicks and proxy metrics, not outcomes.
+
+The teams that solve this own a stronger position in the agency.
+
+Is outcomes measurement a limiting factor for your search programs today?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Match list lag?</div></div>
+                <div class="email-field"><div class="email-field-val body">Most pharma search targeting still depends on static NPI match lists — built once, refreshed slowly.
+
+That means your audiences get stale mid-campaign and you're targeting HCPs based on behavior from months ago.
+
+Soon-to-prescribe audiences update on real behavioral signals — not a list someone emailed last quarter.
+
+Is list latency a constraint on your search programs?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-03</span>
+            <span class="email-type">Peer Pattern</span>
+            <span class="email-timing">Day 9–10</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Audience-first search</div></div>
+                <div class="email-field"><div class="email-field-val body">The search teams gaining ground in pharma have flipped the model — audience-first, not keyword-first.
+
+Deterministic NPI audiences activate in Google/Bing the same way they do in programmatic. Then you measure to claims, not clicks.
+
+That's a different brief to sell internally. And a different budget conversation.
+
+Is that something your search team is positioned to pitch?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Script lift from search</div></div>
+                <div class="email-field"><div class="email-field-val body">We've seen search teams use claims-based outcomes measurement to make a direct case for budget that previously went to programmatic.
+
+The proof point shifts from "we got clicks from likely doctors" to "these verified physicians saw this ad, visited the site, and filled prescriptions."
+
+That's a fundamentally different conversation.
+
+Would a one-pager on how this works in search be useful?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-04</span>
+            <span class="email-type">Break Up / Leave Door Open</span>
+            <span class="email-timing">Day 14–16</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Leaving this here</div></div>
+                <div class="email-field"><div class="email-field-val body">Last note — if HCP search audiences and outcomes measurement aren't a current priority, totally understand.
+
+If the keyword-to-NPI gap becomes a conversation worth having, we'd be worth 15 minutes.
+
+Happy to share how other search teams are making this case internally.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="divider"><div class="divider-line"></div><div class="divider-label">LinkedIn Sequence</div><div class="divider-line"></div></div>
+      <div class="li-sequence">
+        <div class="li-card">
+          <div class="li-step">LI-1</div>
+          <div class="li-content">
+            <div class="li-type">Connection Request</div>
+            <div class="li-message">Curious how pharma search teams are solving the HCP targeting problem when keyword signals can't separate a physician from a patient. Love what you're doing on [client / campaign].</div>
+          </div>
+        </div>
+        <div class="li-card">
+          <div class="li-step">LI-2</div>
+          <div class="li-content">
+            <div class="li-type">Follow-Up</div>
+            <div class="li-message">We're seeing search teams bring deterministic NPI audiences directly into Google/Bing — same graph as programmatic — and measure back to script lift.
+
+Flips the "search is just awareness" narrative.
+
+Is outcomes measurement something you're trying to prove for search today?</div>
+          </div>
+        </div>
+        <div class="li-card">
+          <div class="li-step">LI-3</div>
+          <div class="li-content">
+            <div class="li-type">Value Offer</div>
+            <div class="li-message">If you're building the case for HCP audiences in search, I can share a quick breakdown of how claims-based measurement changes the budget conversation.
+
+Would it help?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOCIAL PERSONA -->
+    <div id="persona-social" class="persona-panel">
+      <div class="persona-header">
+        <div class="persona-title-block">
+          <h3>Agency — Social Lead</h3>
+          <div class="persona-roles">Paid Social Manager · Social Strategy Lead · VP Social Media</div>
+        </div>
+      </div>
+      <div class="persona-meta-grid">
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Core Constraint</div>
+          <div class="persona-meta-text">Social HCP targeting is stuck on blunt match lists. No dynamic audiences. No link from social exposure to Rx behavior. Social loses budget battles to programmatic.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Current Stack</div>
+          <div class="persona-meta-text">Email/NPI match lists uploaded to Meta/LinkedIn, no real-time refresh, no script lift visibility, social seen as brand-awareness only.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Aspiration</div>
+          <div class="persona-meta-text">Access "soon-to-prescribe" audiences — HCPs with real intent signals. Prove social exposure connects to script lift. Compete for budget with programmatic.</div>
+        </div>
+      </div>
+      <div class="persona-angles">
+        <h4>Messaging Angles</h4>
+        <div class="angles-list">
+          <span class="angle-chip">Match list latency in social</span>
+          <span class="angle-chip">No Rx proof from social</span>
+          <span class="angle-chip">Soon-to-prescribe signal gap</span>
+          <span class="angle-chip">Social vs. programmatic budget battle</span>
+          <span class="angle-chip">HCP identity in Meta/LinkedIn</span>
+        </div>
+      </div>
+      <div class="divider"><div class="divider-line"></div><div class="divider-label">4-Touch Email Sequence</div><div class="divider-line"></div></div>
+      <div class="sequence-container">
+        <div class="email-card open">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-01</span>
+            <span class="email-type">Diagnose Infrastructure</span>
+            <span class="email-timing">Day 0</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Social match lists?</div></div>
+                <div class="email-field"><div class="email-field-val body">HCP social targeting is still built on match lists — a static file that was accurate when it was created.
+
+By the time a campaign goes live, those lists are stale. There's no behavioral signal about which physicians are actually considering prescribing.
+
+That's a fundamental ceiling on what social can prove.
+
+Is that the model you're running today?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Beyond match lists?</div></div>
+                <div class="email-field"><div class="email-field-val body">At [Agency], are HCP social audiences still built from match lists — or have you found a way to use real prescribing intent signals?
+
+Most social teams are still uploading static lists. The physicians who are actively considering a new therapy aren't the ones from six months ago.
+
+There's a way to target HCPs based on live clinical signals — and measure back to script lift inside social platforms.
+
+Worth a look or different there?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-02</span>
+            <span class="email-type">Sharpen the Constraint</span>
+            <span class="email-timing">Day 4–5</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Social budget pressure?</div></div>
+                <div class="email-field"><div class="email-field-val body">Programmatic wins pharma budget conversations because it can show script lift. Social usually can't.
+
+Without Rx measurement, social gets defended by awareness metrics. That's a structural disadvantage in every QBR.
+
+The teams solving this are connecting social exposure to real prescribing behavior — and using it to claim a bigger share.
+
+Is outcomes measurement the limiting factor for social at your agency?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Soon-to-prescribe signal?</div></div>
+                <div class="email-field"><div class="email-field-val body">Most pharma social targeting doesn't differentiate between an HCP who's seen the drug before and one who is actively researching a switch.
+
+Soon-to-prescribe audiences are built on live claims signals — so you're reaching physicians at the moment of prescribing consideration, not historical list membership.
+
+That changes the brief — and the results.
+
+Is intent-based HCP targeting something you're evaluating?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-03</span>
+            <span class="email-type">Peer Pattern</span>
+            <span class="email-timing">Day 9–10</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Social proving scripts</div></div>
+                <div class="email-field"><div class="email-field-val body">Social teams that have flipped the measurement model are using it to go back to clients with a different story: social doesn't just build awareness — it moves prescriptions.
+
+The proof point is claims-based script lift tied back to social exposure at the NPI level.
+
+That's a different position in the agency — and a stronger case for more budget.
+
+Is that a case you're trying to build?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-04</span>
+            <span class="email-type">Break Up / Leave Door Open</span>
+            <span class="email-timing">Day 14–16</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Leaving this here</div></div>
+                <div class="email-field"><div class="email-field-val body">Last note — if dynamic HCP audiences and Rx measurement in social aren't a priority now, no worries.
+
+If the match list ceiling or budget conversation ever becomes a focus, happy to show what we're seeing.
+
+I'll leave it with you.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROGRAMMATIC PERSONA -->
+    <div id="persona-programmatic" class="persona-panel">
+      <div class="persona-header">
+        <div class="persona-title-block">
+          <h3>Agency — Programmatic Lead</h3>
+          <div class="persona-roles">Programmatic Director · Trading Desk Lead · VP Programmatic / Media Planning / Strategy</div>
+        </div>
+      </div>
+      <div class="persona-meta-grid">
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Core Constraint</div>
+          <div class="persona-meta-text">Entrenched with DeepIntent / PulsePoint. Won't move without proven self-service + unique audiences not available in existing DSPs. Value not yet validated head-to-head.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Current Stack</div>
+          <div class="persona-meta-text">DeepIntent / PulsePoint (DSPs), LiveRamp (audience activation), Crossix (large-budget measurement), established SSP/DSP relationships.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Aspiration</div>
+          <div class="persona-meta-text">Self-service activation with full measurement baked in. Open infrastructure — embed capabilities into their own stack. Unique audience types unavailable in incumbent DSPs. Holistic cross-channel reporting.</div>
+        </div>
+      </div>
+      <div class="persona-angles">
+        <h4>Messaging Angles</h4>
+        <div class="angles-list">
+          <span class="angle-chip">Identity fragmentation outside DSP</span>
+          <span class="angle-chip">Measurement gated by contract size</span>
+          <span class="angle-chip">DeepIntent ecosystem lock-in</span>
+          <span class="angle-chip">Self-service vs. managed service</span>
+          <span class="angle-chip">Cross-channel omnichannel gap</span>
+        </div>
+      </div>
+      <div class="divider"><div class="divider-line"></div><div class="divider-label">4-Touch Email Sequence</div><div class="divider-line"></div></div>
+      <div class="sequence-container">
+        <div class="email-card open">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-01</span>
+            <span class="email-type">Diagnose Infrastructure</span>
+            <span class="email-timing">Day 0</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Outside programmatic?</div></div>
+                <div class="email-field"><div class="email-field-val body">If you're buying HCP media across DSP, search, and CTV, identity usually resets once traffic leaves the programmatic environment.
+
+That's why most pharma "omnichannel" ends up as coordinated media — not coordinated impact.
+
+The measurement that matters can't follow the doctor across channels.
+
+Is that fragmentation showing up in your campaigns?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Omnichannel illusion?</div></div>
+                <div class="email-field"><div class="email-field-val body">At [Agency], are you reconciling HCP exposure across environments — or does measurement live inside DeepIntent?
+
+Most programmatic teams we talk to have strong identity resolution inside the DSP and significant gaps the moment traffic moves outside it.
+
+There's a way to close that loop across all buying environments without changing how you're already buying.
+
+Worth exploring or different there?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-02</span>
+            <span class="email-type">Sharpen the Constraint</span>
+            <span class="email-timing">Day 4–5</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Measurement gated?</div></div>
+                <div class="email-field"><div class="email-field-val body">Script lift validation on most programmatic campaigns requires enterprise-scale contracts — Crossix, IQVIA.
+
+For mid-sized brands, that means optimization decisions are made on click proxies until budget justifies the minimum.
+
+That's a structural lag that shapes spend decisions more than most teams realize.
+
+Is that the model you're operating in?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Identity reset?</div></div>
+                <div class="email-field"><div class="email-field-val body">The NPI-level identity resolution that makes programmatic powerful typically breaks down in two places: when media moves to search or CTV, and when the measurement layer doesn't live at the SSP level.
+
+That means the "holistic view" is actually stitched together from four different data environments.
+
+Is that the measurement reality behind your omnichannel reporting?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-03</span>
+            <span class="email-type">Peer Pattern / PVP</span>
+            <span class="email-timing">Day 9–10</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Open infrastructure</div></div>
+                <div class="email-field"><div class="email-field-val body">Enterprise agencies are approaching programmatic infrastructure differently — not replacing DeepIntent, but embedding open audience and measurement layers on top of existing buying workflows.
+
+The differentiation isn't the DSP. It's the audience quality and measurement depth the DSP doesn't offer natively.
+
+Is adding a measurement and audience layer on top of your current stack something you're evaluating?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-04</span>
+            <span class="email-type">Break Up / Leave Door Open</span>
+            <span class="email-timing">Day 14–16</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Closing the loop</div></div>
+                <div class="email-field"><div class="email-field-val body">Last note — if cross-channel identity and measurement infrastructure aren't priorities right now, understood.
+
+If the omnichannel gap or Crossix minimums ever become a friction point worth solving, we'd be worth 15 minutes.
+
+Happy to share a one-pager on how the measurement layer works across buying environments.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BRAND PERSONA -->
+    <div id="persona-brand" class="persona-panel">
+      <div class="persona-header">
+        <div class="persona-title-block">
+          <h3>Brand Direct — Pharma Omnichannel / HCP Marketing Lead</h3>
+          <div class="persona-roles">Omnichannel Lead · Digital Marketing Director · HCP Marketing Lead · Brand Director</div>
+        </div>
+      </div>
+      <div class="persona-meta-grid">
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Core Constraint</div>
+          <div class="persona-meta-text">Can't tell which doctors actually engaged. No real-time signals — reactive not proactive. Can't definitively connect campaign exposure to script lift. Price isn't the barrier — impact and insights are.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Current Stack</div>
+          <div class="persona-meta-text">Agency-managed workflows, DeepIntent / PulsePoint, Crossix (enterprise measurement), IQVIA / PurpleLab audiences.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Aspiration</div>
+          <div class="persona-meta-text">Know exactly which HCPs engaged and act on it in real time. Hyper-segmented, personalized HCP journeys. Connect exposure to script lift definitively. Defend budget with outcome data.</div>
+        </div>
+      </div>
+      <div class="persona-angles">
+        <h4>Messaging Angles</h4>
+        <div class="angles-list">
+          <span class="angle-chip">Exposure → visit → script gap</span>
+          <span class="angle-chip">Personalization built on modeled data</span>
+          <span class="angle-chip">Script lift arrives post-flight</span>
+          <span class="angle-chip">Agency-mediated measurement blind spot</span>
+          <span class="angle-chip">Real-time HCP engagement visibility</span>
+        </div>
+      </div>
+      <div class="divider"><div class="divider-line"></div><div class="divider-label">4-Touch Email Sequence</div><div class="divider-line"></div></div>
+      <div class="sequence-container">
+        <div class="email-card open">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-01</span>
+            <span class="email-type">Diagnose Infrastructure</span>
+            <span class="email-timing">Day 0</span>
+            <span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Which HCPs engaged?</div></div>
+                <div class="email-field"><div class="email-field-val body">After a campaign goes live, most brand teams can tell you reach and frequency.
+
+But can you tell which specific physicians saw the ad, visited the site, and then changed their prescribing behavior?
+
+Most can't. The measurement is either aggregated, modeled, or arrives after the flight.
+
+Is that the visibility you're working with?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B — Brand-Triggered</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Script lift lag?</div></div>
+                <div class="email-field"><div class="email-field-val body">With [Brand] in market, are you getting script lift validation while the campaign is still live — or does that data arrive after spend is committed?
+
+Most brand teams get outcomes data weeks or months after the flight ends.
+
+By then, you're optimizing the next campaign based on the last one — not the current one.
+
+Is that the measurement model you're operating in?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-02</span><span class="email-type">Sharpen the Constraint</span><span class="email-timing">Day 4–5</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Modeled vs. real?</div></div>
+                <div class="email-field"><div class="email-field-val body">Most pharma personalization is built on modeled data — inferred HCP behavior, not observed.
+
+That means the "personalized journey" is really an educated guess about what a physician segment might respond to.
+
+True personalization requires knowing which specific NPI saw which ad, visited which page, and did or didn't prescribe.
+
+Is your current stack giving you that resolution?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-03</span><span class="email-type">Peer Pattern</span><span class="email-timing">Day 9–10</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Real-time HCP signal</div></div>
+                <div class="email-field"><div class="email-field-val body">Brand teams that have moved to deterministic exposure tracking — not modeled reach — report a different kind of campaign visibility.
+
+They can see which NPIs are engaging, adjust targeting mid-flight, and tie exposure directly to claims-based outcomes without waiting for a post-campaign report.
+
+Would a 1-pager on what closed-loop looks like at the NPI level be worth sharing with your team?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-04</span><span class="email-type">Break Up / Leave Door Open</span><span class="email-timing">Day 14–16</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-val body">Last note — if real-time HCP engagement visibility and in-flight script lift aren't current priorities, totally understood.
+
+If the measurement lag ever becomes a friction point worth solving, we'd love to show you what we've built.
+
+I'll leave it here.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ANALYTICS PERSONA -->
+    <div id="persona-analytics" class="persona-panel">
+      <div class="persona-header">
+        <div class="persona-title-block">
+          <h3>Pharma / Agency — Analytics / Measurement Lead</h3>
+          <div class="persona-roles">Commercial Analytics Director · Marketing Ops Lead · Measurement & Insights Lead</div>
+        </div>
+      </div>
+      <div class="persona-meta-grid">
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Core Constraint</div>
+          <div class="persona-meta-text">Measurement arrives too late to optimize. Enterprise minimums (Crossix $500K+) block access for mid-sized brands. Modeled reach vs. deterministic NPI-level exposure. No mid-flight optimization capability.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Current Stack</div>
+          <div class="persona-meta-text">Crossix (if enterprise), internal BI tools, post-campaign reporting, DSP click dashboards — all reactive, not real-time.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Aspiration</div>
+          <div class="persona-meta-text">Exposed vs. control results — clearly and quickly. Connect exposure → site visit → script lift in one system. Optimize while campaigns are live. Defend budget to leadership with real outcome data.</div>
+        </div>
+      </div>
+      <div class="persona-angles">
+        <h4>Messaging Angles</h4>
+        <div class="angles-list">
+          <span class="angle-chip">Post-flight data arrives too late</span>
+          <span class="angle-chip">$500K measurement minimums</span>
+          <span class="angle-chip">Clicks ≠ clinical behavior</span>
+          <span class="angle-chip">Modeled vs. deterministic exposure</span>
+          <span class="angle-chip">Mid-flight optimization gap</span>
+        </div>
+      </div>
+      <div class="divider"><div class="divider-line"></div><div class="divider-label">4-Touch Email Sequence</div><div class="divider-line"></div></div>
+      <div class="sequence-container">
+        <div class="email-card open">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-01</span><span class="email-type">Diagnose Infrastructure</span><span class="email-timing">Day 0</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Still optimizing on clicks?</div></div>
+                <div class="email-field"><div class="email-field-val body">When leadership asks "did we move scripts?", most analytics teams are still answering with clicks, reach, and frequency.
+
+The problem isn't capability. It's that measurement infrastructure in healthcare was built for enterprise budgets — not campaign cycles.
+
+Most mid-flight optimization still relies on proxy metrics.
+
+Is that the reporting reality on your side?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Script lift timing?</div></div>
+                <div class="email-field"><div class="email-field-val body">At [Company/Brand], does script lift validation arrive in time to influence spend decisions — or does that data show up after the flight ends?
+
+Most measurement infrastructure updates claims data weekly or monthly.
+
+That lag means budget decisions are made on incomplete signal — and optimization happens one campaign too late.
+
+Is that the model you're working inside?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-02</span><span class="email-type">Sharpen the Constraint</span><span class="email-timing">Day 4–5</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Crossix minimums?</div></div>
+                <div class="email-field"><div class="email-field-val body">The most trusted measurement infrastructure in pharma comes with $500K minimum commitments.
+
+For brands that don't clear that threshold — or campaigns that need mid-flight signal, not end-of-quarter reporting — that's a structural ceiling.
+
+Most analytics leads are either paying for access they don't fully need, or justifying campaigns on click proxies because better data isn't accessible.
+
+Is measurement access a constraint on your team?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-03</span><span class="email-type">Value Offer</span><span class="email-timing">Day 9–10</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Exposure → visit → script</div></div>
+                <div class="email-field"><div class="email-field-val body">We've built a closed-loop measurement layer that connects deterministic NPI exposure → physician site visits → claims-based script lift — without $500K minimums.
+
+It's designed for in-flight optimization, not post-campaign reporting.
+
+Would a sample dashboard view be useful to share with your team?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-04</span><span class="email-type">Break Up / Leave Door Open</span><span class="email-timing">Day 14–16</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-val body">Last note — if measurement access and in-flight optimization aren't current priorities, understood.
+
+If the Crossix minimum, claims data lag, or closed-loop visibility ever becomes worth solving, we'd be worth 15 minutes.
+
+Happy to share the dashboard view when timing is right.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PLATFORM PERSONA -->
+    <div id="persona-platform" class="persona-panel">
+      <div class="persona-header">
+        <div class="persona-title-block">
+          <h3>Vendor / Platform Partner</h3>
+          <div class="persona-roles">VP Partnerships · VP Product · Director Business Development · Head of Data Partnerships (DSPs, SSPs, HCP data cos, analytics vendors)</div>
+        </div>
+      </div>
+      <div class="persona-meta-grid">
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Core Constraint</div>
+          <div class="persona-meta-text">Unknowingly rebuilding what Wrango already provides — at massive cost. High upfront commitments before earning a dollar. NPI match lists carry consent risk. Pharma clients asking for closed-loop Rx measurement are going elsewhere.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Current Stack</div>
+          <div class="persona-meta-text">LiveRamp / traditional identity platforms with high minimums, NPI match lists only, no consented HCP graph, no native script lift or claims measurement.</div>
+        </div>
+        <div class="persona-meta-item">
+          <div class="persona-meta-label">Aspiration</div>
+          <div class="persona-meta-text">Unlock pharma as high-margin vertical with no infrastructure build. Offer consented 4.4M NPI graph + script lift as native capability. Move from pay-first to revenue-share model.</div>
+        </div>
+      </div>
+      <div class="persona-angles">
+        <h4>Messaging Angles</h4>
+        <div class="angles-list">
+          <span class="angle-chip">Building what Wrango already built</span>
+          <span class="angle-chip">Upfront cost before earning</span>
+          <span class="angle-chip">NPI consent liability</span>
+          <span class="angle-chip">Pharma revenue going elsewhere</span>
+          <span class="angle-chip">Revenue-share vs. upfront model</span>
+        </div>
+      </div>
+      <div class="divider"><div class="divider-line"></div><div class="divider-label">4-Touch Email Sequence</div><div class="divider-line"></div></div>
+      <div class="sequence-container">
+        <div class="email-card open">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-01</span><span class="email-type">Diagnose Infrastructure</span><span class="email-timing">Day 0</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Building pharma capability?</div></div>
+                <div class="email-field"><div class="email-field-val body">Most platforms expanding into healthcare are building the same infrastructure from scratch — consented HCP graph, claims-based audiences, closed-loop Rx measurement.
+
+The cost and timeline are significant before a dollar of pharma revenue is earned.
+
+Some are discovering that embedding an existing healthcare layer is faster, cheaper, and lower risk than building.
+
+Is pharma capability something you're currently building or evaluating?</div></div>
+              </div>
+              <div class="variant b">
+                <div class="variant-label">Variant B</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Pharma revenue gap?</div></div>
+                <div class="email-field"><div class="email-field-val body">At [Platform], are pharma clients asking for closed-loop Rx measurement or deterministic HCP audiences — and going elsewhere when you can't deliver natively?
+
+Most platforms are losing that revenue to DSPs and data partners that built healthcare infrastructure years ago.
+
+There's a way to embed a full healthcare layer — 4.4M consented NPIs, claims audiences, script lift — directly into your platform with no upfront build cost.
+
+Worth exploring?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-02</span><span class="email-type">Sharpen the Constraint</span><span class="email-timing">Day 4–5</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">NPI consent liability?</div></div>
+                <div class="email-field"><div class="email-field-val body">Most NPI match list vendors transfer the consent liability to the platform activating them.
+
+That's a risk that's easy to miss until a pharma client asks how you ensured consent compliance for the 4.2 million physicians in your targeting list.
+
+A consented HCP graph handles that at the source — not after activation.
+
+Is consent infrastructure something you're thinking about as you scale into pharma?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-03</span><span class="email-type">Value Offer</span><span class="email-timing">Day 9–10</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-label">Subject</div><div class="email-field-val subject">Embed, not build</div></div>
+                <div class="email-field"><div class="email-field-val body">We embed a full healthcare layer directly into platforms — 4.4M consented NPIs, claims-based audiences, Deal ID activation, closed-loop script lift, unlimited pixels.
+
+No upfront build. No minimums. Revenue share: both sides earn when pharma clients spend.
+
+Would a brief overview of how the API integration works be worth sharing with your product team?</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="email-card">
+          <div class="email-header" onclick="toggleEmail(this)">
+            <span class="email-num">E-04</span><span class="email-type">Break Up / Leave Door Open</span><span class="email-timing">Day 14–16</span><span class="email-toggle">▼</span>
+          </div>
+          <div class="email-body">
+            <div class="email-variants">
+              <div class="variant a">
+                <div class="variant-label">Variant A</div>
+                <div class="email-field"><div class="email-field-val body">Last note — if pharma capability infrastructure isn't a current roadmap priority, no worries.
+
+If the build-vs-embed decision comes up for healthcare, happy to walk through what we offer.
+
+I'll leave it with you.</div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ─── 6. QA CHECKLIST ─── -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-num">06</div>
+      <h2 class="section-title">Pre-Send QA <span>/ Checklist</span></h2>
+    </div>
+    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 24px;">Every email must pass this checklist before sending. No exceptions.</p>
+    <div class="checklist">
+      <div class="check-item"><div class="check-box"></div>Subject line is 2–4 words, tension-based, no fluff</div>
+      <div class="check-item"><div class="check-box"></div>Company name OR sharp tension in first 15 words</div>
+      <div class="check-item"><div class="check-box"></div>Email is under 100 words</div>
+      <div class="check-item"><div class="check-box"></div>No paragraph blocks — max 2 lines per idea</div>
+      <div class="check-item"><div class="check-box"></div>Personalization intensifies the condition (not decorative)</div>
+      <div class="check-item"><div class="check-box"></div>One clear infrastructure constraint diagnosed</div>
+      <div class="check-item"><div class="check-box"></div>CTA is interest-based, not meeting-based</div>
+      <div class="check-item"><div class="check-box"></div>No product pitch in Email 1</div>
+      <div class="check-item"><div class="check-box"></div>No links or attachments in Email 1–3</div>
+      <div class="check-item"><div class="check-box"></div>Is this constraint objectively likely true for this account?</div>
+      <div class="check-item"><div class="check-box"></div>Would this make the buyer pause and recognize a problem?</div>
+      <div class="check-item"><div class="check-box"></div>If PVP: is the insight account-specific and real? If vague — do not send.</div>
+    </div>
+  </section>
+
+  <!-- ─── 7. REPLY HANDLING ─── -->
+  <section class="section" id="replies">
+    <div class="section-header">
+      <div class="section-num">07</div>
+      <h2 class="section-title">Reply Handling <span>/ Transition Playbook</span></h2>
+    </div>
+    <p style="font-size:13px; color: var(--text-muted); margin-bottom: 24px;">When they reply, the conversation shifts from diagnosis to Wrango introduction. Move contextually — never jump to a demo before the pain is confirmed.</p>
+    <div class="reply-grid">
+      <div class="reply-card">
+        <div class="reply-signal">Signal: "Yes, that's an issue"</div>
+        <div class="reply-trigger">e.g. "Yeah, script lift data always arrives after the campaign ends. It's frustrating."</div>
+        <div class="reply-response">Confirm the constraint briefly. Introduce Wrango as the infrastructure layer that solves it. Offer a 1-pager or case study — not a demo yet.<br><br><em>"That's exactly the gap we built around. We have a closed-loop layer that connects exposure → site visit → script lift mid-flight — not post-campaign. Worth sharing how it works?"</em></div>
+      </div>
+      <div class="reply-card">
+        <div class="reply-signal">Signal: "How do you solve this?"</div>
+        <div class="reply-trigger">e.g. "Curious how you'd address the identity fragmentation problem."</div>
+        <div class="reply-response">Don't explain everything. Tease the infrastructure. Offer a 10-minute call or a 1-pager. Keep the mystery.<br><br><em>"The short version: we sit at the SSP level, so NPI-level identity persists regardless of where media buys. Happy to share the one-pager or talk for 10 mins — whichever is easier."</em></div>
+      </div>
+      <div class="reply-card">
+        <div class="reply-signal">Signal: Disagreement / Pushback</div>
+        <div class="reply-trigger">e.g. "We actually have pretty good cross-channel measurement."</div>
+        <div class="reply-response">Acknowledge it. Ask a clarifying question. Don't argue. Use it to learn about their stack.<br><br><em>"That's good to hear — genuinely. Curious what you're using for NPI-level resolution outside programmatic environments? That's where most teams hit the wall."</em></div>
+      </div>
+      <div class="reply-card">
+        <div class="reply-signal">Signal: "Not the right time"</div>
+        <div class="reply-trigger">e.g. "We're under a contract until Q3."</div>
+        <div class="reply-response">Note the timing. Set a lightweight future touchpoint. Don't push.<br><br><em>"Understood — happy to reconnect when Q3 is closer. I'll save the infrastructure overview for then. Good luck with the current flight."</em></div>
+      </div>
+      <div class="reply-card">
+        <div class="reply-signal">Signal: "Send me more"</div>
+        <div class="reply-trigger">e.g. "Can you send over more info?"</div>
+        <div class="reply-response">Don't send a deck. Send a focused 1-pager or case study relevant to their specific pain. Then schedule a call.<br><br><em>"I'll send our closed-loop measurement 1-pager — it's probably the most relevant for what you described. Then happy to walk through it briefly if useful."</em></div>
+      </div>
+      <div class="reply-card">
+        <div class="reply-signal">Signal: Referral / Redirect</div>
+        <div class="reply-trigger">e.g. "You should talk to Sarah — she owns measurement."</div>
+        <div class="reply-response">Thank them. Ask for a warm intro or permission to reach out directly. Use the context from this conversation to personalize the new outreach.<br><br><em>"Thanks — Sarah's exactly who I should talk to. Would you be comfortable making an intro, or should I reach out directly and reference this conversation?"</em></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── 8. TONE ─── -->
+  <section class="section">
+    <div class="section-header">
+      <div class="section-num">08</div>
+      <h2 class="section-title">Tone Standard <span>/ What Wrango Sounds Like</span></h2>
+    </div>
+    <div class="tone-compare">
+      <div class="tone-col good">
+        <div class="tone-label">✓ Wrango Tone</div>
+        <ul>
+          <li>Senior and infrastructure-aware</li>
+          <li>Calm and slightly challenging</li>
+          <li>Provocative but not aggressive</li>
+          <li>Peer-to-peer — not vendor-to-buyer</li>
+          <li>Confident without being loud</li>
+          <li>Diagnostic — names the constraint precisely</li>
+          <li>Curious — asks real questions</li>
+        </ul>
+      </div>
+      <div class="tone-col bad">
+        <div class="tone-label">✗ Never</div>
+        <ul>
+          <li>Hype or exclamation points</li>
+          <li>Buzzwords ("revolutionary", "game-changing")</li>
+          <li>Corporate tone or jargon</li>
+          <li>Needy or desperate energy</li>
+          <li>Product dumping before rapport</li>
+          <li>"I hope this email finds you well"</li>
+          <li>"Following up on my last email"</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /page -->
+
+<footer>
+  Wrango Outbound Playbook · V1.0 · Built for category-defining outbound · Reply = Win Condition
+</footer>
+
+<script>
+  function switchPersona(id) {
+    document.querySelectorAll('.persona-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.persona-tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('persona-' + id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function toggleEmail(header) {
+    const card = header.parentElement;
+    card.classList.toggle('open');
+  }
+
+  // Open first email in each persona panel on tab switch
+  document.querySelectorAll('.persona-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      setTimeout(() => {
+        const activePanel = document.querySelector('.persona-panel.active');
+        const firstCard = activePanel.querySelector('.email-card');
+        if (firstCard && !firstCard.classList.contains('open')) {
+          firstCard.classList.add('open');
+        }
+      }, 50);
+    });
+  });
+</script>
+
+</body>
+</html>
